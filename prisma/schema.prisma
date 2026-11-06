@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Pelanggan {
+  id        Int         @id @default(autoincrement())
+  nama      String
+  email     String      @unique
+  no_telp   String
+  
+  // Relasi 1 pelanggan bisa memiliki banyak penyewaan
+  penyewaan Penyewaan[]
+}
+
+model Kendaraan {
+  id        Int         @id @default(autoincrement())
+  merk      String
+  tipe      String
+  plat      String      @unique
+  
+  // Relasi 1 kendaraan bisa memiliki banyak penyewaan
+  penyewaan Penyewaan[]
+}
+
+model Penyewaan {
+  id           Int       @id @default(autoincrement())
+  pelangganId  Int
+  kendaraanId  Int
+  tanggal_sewa DateTime
+  total_biaya  Int
+
+  // Relasi mengambil data dari Pelanggan dan Kendaraan
+  pelanggan    Pelanggan @relation(fields: [pelangganId], references: [id])
+  kendaraan    Kendaraan @relation(fields: [kendaraanId], references: [id])
+}
